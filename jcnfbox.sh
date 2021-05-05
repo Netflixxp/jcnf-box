@@ -191,6 +191,15 @@ blue "下载完成"
 bash "/root/install.sh"
 }
 
+#宝塔面板英文官方版·一键安装
+function aaPanel(){
+wget -O "/root/aaPanel.sh" "http://www.aapanel.com/script/install_6.0_en.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/aaPanel.sh"
+chmod 777 "/root/aaPanel.sh"
+blue "下载完成"
+bash "/root/aaPanel.sh"
+}
+
 #科学上网工具
 #iptables.sh iptable中转
 function iptsh(){
@@ -266,7 +275,8 @@ function start_menu(){
     green " 13. 虚拟内存SWAP一键安装 "
     green " 14. 一键安装BBR "
     green " 15. 系统网络配置优化 "
-    green " 16. 宝塔面板官方一键安装 "
+    green " 16. 宝塔中文官方一键安装 "
+	green " 17. 宝塔英文官方一键安装（无需验证） "
 
     yellow " =======科学上网工具============================ "
     green " 21. iptables一键中转 "
@@ -319,6 +329,9 @@ function start_menu(){
 	;;
 	16 )
            btnew
+	;;
+	17 )
+           aaPanel
 	;;
 	21 )
            iptsh
