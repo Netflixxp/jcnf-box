@@ -122,7 +122,7 @@ bash "/root/swap.sh"
 
 #安装BBR
 function bbr(){
-wget -O "/root/swap.sh" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/tcp.sh" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/tcp.sh"
 chmod 777 "/root/tcp.sh"
 yellow "下载完成,你也可以输入 bash /root/tcp.sh 来手动运行"
