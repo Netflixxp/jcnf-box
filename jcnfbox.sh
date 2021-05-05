@@ -104,7 +104,7 @@ green " bash changesource.sh restore 还原默认源 "
 
 #IPV.SH ipv4/6优先级调整
 function ipvsh(){
-wget -O "/root/ipv4.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/ipv.sh" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/ipv4.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/ipv4.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/ipv4.sh"
 chmod 777 "/root/ipv4.sh"
 yellow "下载完成,之后可执行 bash /root/ipv4.sh 再次运行"
@@ -122,9 +122,9 @@ bash "/root/swap.sh"
 
 #安装BBR
 function bbr(){
-wget -O "/root/tcp" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/tcp"
-chmod 777 "/root/tcp"
+wget -O "/root/swap.sh" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/tcp.sh"
+chmod 777 "/root/tcp.sh"
 yellow "下载完成,你也可以输入 bash /root/tcp.sh 来手动运行"
 bash "/root/tcp.sh"
 }
@@ -194,9 +194,9 @@ bash "/root/install.sh"
 #科学上网工具
 #iptables.sh iptable中转
 function iptsh(){
-wget -O "/root/iptables" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/ipt.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/iptables"
-chmod 777 "/root/iptables"
+wget -O "/root/iptables.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/main/sh/iptables.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/iptables.sh"
+chmod 777 "/root/iptables.sh"
 yellow "下载完成，你也可以输入 bash /root/iptables.sh 来手动运行"
 bash "/root/iptables.sh"
 }
@@ -204,8 +204,8 @@ bash "/root/iptables.sh"
 #gost.sh gost一键中转
 function gost(){
 wget -O "/root/gost" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/gost"
-chmod 777 "/root/gost"
+chmod +x "/root/gost.sh"
+chmod 777 "/root/gost.sh"
 yellow "下载完成，你也可以输入 bash /root/gost.sh 来手动运行"
 bash "/root/gost.sh"
 }
@@ -221,9 +221,9 @@ bash "/root/mtp.sh"
 
 #xray.sh xray一键安装8合一
 function xray(){
-wget -O "/root/xray" "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/xray"
-chmod 777 "/root/xray"
+wget -O "/root/xray.sh" "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/xray.sh"
+chmod 777 "/root/xray.sh"
 yellow "下载完成，你也可以输入 bash /root/xray.sh 来手动运行"
 bash "/root/xray.sh"
 }
