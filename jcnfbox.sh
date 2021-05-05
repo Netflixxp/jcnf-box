@@ -42,7 +42,7 @@ wget -O "/root/jcnf.sh" "https://raw.githubusercontent.com/Netflixxp/jcnfbesttra
 chmod +x "/root/jcnf.sh"
 chmod 777 "/root/jcnf.sh"
 yellow "下载完成,之后可执行 bash /root/jcnf.sh 再次运行"
-bash "bash /root/jcnf.sh"
+bash "/root/jcnf.sh"
 }
 
 #Speedtest for Linux·下载
@@ -123,10 +123,10 @@ bash "/root/swap.sh"
 #安装BBR
 function bbr(){
 wget -O "/root/tcp" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/iptables"
-chmod 777 "/root/iptables"
+chmod +x "/root/tcp"
+chmod 777 "/root/tcp"
 yellow "下载完成,你也可以输入 bash /root/tcp.sh 来手动运行"
-bash /root/tcp.sh
+bash "/root/tcp.sh"
 }
 
 #系统网络配置优化
@@ -198,7 +198,7 @@ wget -O "/root/iptables" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSour
 chmod +x "/root/iptables"
 chmod 777 "/root/iptables"
 yellow "下载完成，你也可以输入 bash /root/iptables.sh 来手动运行"
-bash /root/iptables.sh
+bash "/root/iptables.sh"
 }
 
 #gost.sh gost一键中转
@@ -207,7 +207,7 @@ wget -O "/root/gost" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/m
 chmod +x "/root/gost"
 chmod 777 "/root/gost"
 yellow "下载完成，你也可以输入 bash /root/gost.sh 来手动运行"
-bash /root/gost.sh
+bash "/root/gost.sh"
 }
 
 #MTP&TLS 一键脚本
@@ -225,7 +225,7 @@ wget -O "/root/xray" "https://raw.githubusercontent.com/mack-a/v2ray-agent/maste
 chmod +x "/root/xray"
 chmod 777 "/root/xray"
 yellow "下载完成，你也可以输入 bash /root/xray.sh 来手动运行"
-bash /root/xray.sh
+bash "/root/xray.sh"
 }
 
 #v2-ui.sh 一键安装
