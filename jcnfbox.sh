@@ -200,6 +200,15 @@ blue "下载完成"
 bash "/root/aaPanel.sh"
 }
 
+#宝塔面板破解版·一键安装
+function btpj(){
+wget -O "/root/btpj.sh" "http://download.hostcli.com/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/btpj.sh"
+chmod 777 "/root/btpj.sh"
+blue "下载完成"
+bash "/root/btpj.sh"
+}
+
 #科学上网工具
 #iptables.sh iptable中转
 function iptsh(){
@@ -277,6 +286,7 @@ function start_menu(){
     green " 15. 系统网络配置优化 "
     green " 16. 宝塔中文官方一键安装 "
 	green " 17. 宝塔英文官方一键安装（无需验证） "
+	green " 18. 宝塔面板破解纯净版 "
 
     yellow " =======科学上网工具============================ "
     green " 21. iptables一键中转 "
@@ -332,6 +342,9 @@ function start_menu(){
 	;;
 	17 )
            aaPanel
+	;;
+	18 )
+           btpj
 	;;
 	21 )
            iptsh
