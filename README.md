@@ -44,6 +44,11 @@
 * 工具中所有脚本均来自互联网，不对脚本安全性负责。如果你比较在意安全，请勿使用各类一键脚本。
 ***
 
+# 问题反馈
+[TG频道](https://t.me/mffjc)
+[TG群组](https://t.me/jcnfnatuo)
+***
+
 # [购买奈飞、YouTube正规合租车](https://jcnf.xyz/nf)
 ***
 

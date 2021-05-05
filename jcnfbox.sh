@@ -248,7 +248,8 @@ function start_menu(){
     clear
     red " jcnf 常用脚本包" 
     green " https://github.com/Netflixxp/jcnf-box "
-    green " 导航博客 https://ybfl.xyz "
+    green " 博客 https://ybfl.xyz "
+	green " TG频道 https://t.me/mffjc "
 	
 	yellow " =======服务器检查============================== "
     green " 1. Lemonbench 综合测试 "
