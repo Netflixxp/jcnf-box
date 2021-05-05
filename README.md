@@ -44,6 +44,9 @@
 * 工具中所有脚本均来自互联网，不对脚本安全性负责。如果你比较在意安全，请勿使用各类一键脚本。
 ***
 
+# [购买奈飞、YouTube正规合租车](https://jcnf.xyz/nf)
+***
+
 # 感谢
  * [BlueSkyXN](https://github.com/BlueSkyXN/SKY-BOX)
  * [arloor](https://github.com/arloor/iptablesUtils)
