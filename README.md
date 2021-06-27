@@ -38,7 +38,7 @@
 	- v2-ui一键安装
 	- wulabing一键xray脚本
 
-![功能列表](https://github.com/Netflixxp/jcnf-box/blob/main/img/sm.png)
+![功能列表](hhttps://cdn.jsdelivr.net/gh/Netflixxp/jcnf-box/blob/main/img/sm.png)
 ***
 
 # 免责声明
