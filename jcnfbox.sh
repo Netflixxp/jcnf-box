@@ -260,6 +260,10 @@ function v2-ui(){
 bash <(curl -Ls https://blog.sprov.xyz/v2-ui.sh)
 }
 
+# Cloudflare WARP 一键配置脚本
+function WARP(){
+bash <(curl -fsSL git.io/warp.sh) menu
+}
 
 #主菜单
 function start_menu(){
@@ -287,6 +291,7 @@ function start_menu(){
     green " 16. 宝塔中文官方一键安装 "
 	green " 17. 宝塔英文官方一键安装（无需验证） "
 	green " 18. 宝塔面板破解纯净版 "
+	green " 19. Cloudflare WARP 一键配置脚本 "
 
     yellow " =======科学上网工具============================ "
     green " 21. iptables一键中转 "
@@ -345,6 +350,9 @@ function start_menu(){
 	;;
 	18 )
            btpj
+	;;
+	19 )
+           WARP
 	;;
 	21 )
            iptsh
