@@ -265,6 +265,15 @@ function WARP(){
 bash <(curl -fsSL git.io/warp.sh) menu
 }
 
+# Ehcoo隧道中转
+function ehco(){
+wget -O "/root/ehco.sh" "https://cdn.jsdelivr.net/gh/missuo/Ehcoo/ehco.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/ehco.sh"
+chmod 777 "/root/ehco.sh"
+yellow "下载完成，你也可以输入 bash /root/ehco.sh 来手动运行"
+bash "/root/ehco.sh"
+}
+
 #主菜单
 function start_menu(){
     clear
@@ -300,6 +309,7 @@ function start_menu(){
     green " 24. xray一键安装8合一脚本 "
     green " 25. v2-ui一键安装 "
 	green " 26. wulabing一键xray脚本 "
+	green " 27. Ehcoo隧道中转 "
 	
     yellow " =============================================== "
     green " 0. 退出脚本"
@@ -371,6 +381,9 @@ function start_menu(){
 	;;
 	26 )
            wulabing
+	;;
+	27 )
+           ehco
 	;;
         0 )
             exit 1

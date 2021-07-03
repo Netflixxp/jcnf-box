@@ -38,6 +38,7 @@
 	- xray一键安装8合一脚本
 	- v2-ui一键安装
 	- wulabing一键xray脚本
+	- Ehcoo隧道中转
 
 ![功能列表](https://cdn.jsdelivr.net/gh/Netflixxp/jcnf-box/img/sm.png)
 ***
