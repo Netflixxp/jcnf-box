@@ -40,7 +40,7 @@
 	- wulabing一键xray脚本
 	- Ehcoo隧道中转(2021年7月3日添加)
 
-![功能列表](https://cdn.jsdelivr.net/gh/Netflixxp/jcnf-box/img/sm.png)
+![功能列表](https://cdn.jsdelivr.net/gh/Netflixxp/jcnf-box/img/sm.jpg)
 ***
 
 # 免责声明
