@@ -30,7 +30,7 @@
 	- 宝塔中文官方一键安装
 	- 宝塔英文官方一键安装（无需验证）
 	- 宝塔破解纯净版
-	- Cloudflare WARP 一键配置脚本
+	- Cloudflare WARP 一键配置脚本（2021年7月3日添加）
 3. 科学上网工具
 	- iptables一键中转
 	- gost一键中转
@@ -38,7 +38,7 @@
 	- xray一键安装8合一脚本
 	- v2-ui一键安装
 	- wulabing一键xray脚本
-	- Ehcoo隧道中转
+	- Ehcoo隧道中转(2021年7月3日添加)
 
 ![功能列表](https://cdn.jsdelivr.net/gh/Netflixxp/jcnf-box/img/sm.png)
 ***
