@@ -221,7 +221,7 @@ bash "/root/iptables.sh"
 
 #gost.sh gost一键中转
 function gost(){
-wget -O "/root/gost" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/gost.sh" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/gost.sh"
 chmod 777 "/root/gost.sh"
 yellow "下载完成，你也可以输入 bash /root/gost.sh 来手动运行"
