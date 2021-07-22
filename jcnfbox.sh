@@ -267,11 +267,7 @@ bash <(curl -fsSL git.io/warp.sh) menu
 
 # Ehcoo隧道中转
 function ehco(){
-wget -O "/root/ehco.sh" "https://cdn.jsdelivr.net/gh/missuo/Ehcoo/ehco.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/ehco.sh"
-chmod 777 "/root/ehco.sh"
-yellow "下载完成，你也可以输入 bash /root/ehco.sh 来手动运行"
-bash "/root/ehco.sh"
+bash <(curl -fsSL https://leo.moe/ehco.sh)
 }
 
 #主菜单
