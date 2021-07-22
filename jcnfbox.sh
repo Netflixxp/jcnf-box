@@ -47,11 +47,11 @@ bash "/root/jcnf.sh"
 
 #Speedtest for Linux·下载
 function speedtest-linux(){
-wget -O "/root/speedtest" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh//speedtest" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/speedtest" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/speedtest" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/speedtest"
 chmod 777 "/root/speedtest"
 yellow "下载完成,之后可执行 bash /root/speedtest 再次运行"
-/root/speedtest
+bash "/root/speedtest"
 }
 
 #获取本机IP
@@ -82,6 +82,14 @@ function nf(){
 bash <(curl -sSL https://raw.githubusercontent.com/Netflixxp/NF/main/nf.sh)
 }
 
+#检测/诊断Youtube地域
+function tubecheck(){
+wget -O "/root/tubecheck" "https://cdn.jsdelivr.net/gh/sjlleo/TubeCheck/CDN/tubecheck_1.0beta_linux_amd64" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/tubecheck"
+chmod 777 "/root/tubecheck"
+yellow "下载完成,之后可执行 bash /root/tubecheck 再次运行"
+bash "/root/tubecheck"
+}
 
 #服务器功能调试
 #ChangeSource Linux换源脚本·下载
@@ -286,6 +294,7 @@ function start_menu(){
     green " 5. Speedtest测速"
     green " 6. 获取本机IP"
     green " 7. 流媒体解锁测试"
+	green " 8. 检测/诊断Youtube地域"
 	
     yellow " =======服务器功能============================== "
     green " 11. Linux换源脚本"
@@ -332,6 +341,10 @@ function start_menu(){
 	;;
 	7 )
            nf
+	;;
+	;;
+	8 )
+           tubecheck
 	;;
 	11 )
            cssh
