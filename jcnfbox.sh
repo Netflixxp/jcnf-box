@@ -336,62 +336,61 @@ function start_menu(){
         5 )
            speedtest-linux
 	;;
-	6 )
+	    6 )
            getip
 	;;
-	7 )
+	    7 )
            nf
 	;;
-	;;
-	8 )
+		8 )
            tubecheck
 	;;
-	11 )
+		11 )
            cssh
 	;;
-	12 )
+		12 )
            ipvsh
 	;;
-	13 )
+		13 )
            swapsh
 	;;
-	14 )
+		14 )
            bbr
 	;;
-	15 )
+		15 )
            system-best
 	;;
-	16 )
+		16 )
            btnew
 	;;
-	17 )
+		17 )
            aaPanel
 	;;
-	18 )
+		18 )
            btpj
 	;;
-	19 )
+		19 )
            WARP
 	;;
-	21 )
+		21 )
            iptsh
 	;;
-	22 )
+		22 )
            gost
 	;;
-	23 )
+		23 )
            mtp
 	;;
-	24 )
+		24 )
            xray
 	;;
-	25 )
+		25 )
            v2-ui
 	;;
-	26 )
+		26 )
            wulabing
 	;;
-	27 )
+		27 )
            ehco
 	;;
         0 )
