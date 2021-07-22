@@ -88,7 +88,7 @@ wget -O "/root/tubecheck" "https://cdn.jsdelivr.net/gh/sjlleo/TubeCheck/CDN/tube
 chmod +x "/root/tubecheck"
 chmod 777 "/root/tubecheck"
 yellow "下载完成,之后可执行 bash /root/tubecheck 再次运行"
-bash "/root/tubecheck"
+./tubecheck
 }
 
 #服务器功能调试
