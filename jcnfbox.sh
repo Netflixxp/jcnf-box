@@ -23,7 +23,7 @@ curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast
 
 #三网Speedtest测速
 function 3speed(){
-bash <(curl -Lso- https://git.io/superspeed)
+bash <(curl -Lso- https://raw.githubusercontent.com/BlueSkyXN/SpeedTestCN/main/superspeed.sh)
 }
 
 #Memorytest 内存压力测试
