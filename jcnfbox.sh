@@ -15,23 +15,6 @@ blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
 
-shell_version="1.0.1"
-function checknew() {
-  checknew=$(jcnfbox.sh -V 2>&1 | awk '{print $2}')
-  check_new_ver
-  echo "你的jcnfbox版本为:""$checknew"""
-  echo -n 是否更新\(y/n\)\:
-  read checknewnum
-  if test $checknewnum = "y"; then
-    cp -r /etc/jcnfbox.sh /tmp/
-    Install_ct
-    rm -rf /etc/jcnfbox.sh
-    mv /tmp/jcnfbox.sh /etc/
-    systemctl restart jcnfbox.sh
-  else
-    exit 0
-  fi
-}
 #服务器检查项目
 #Lemonbench 综合测试
 function Lemonbench(){
