@@ -15,6 +15,26 @@ blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
 
+Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Font_color_suffix="\033[0m"
+Info="${Green_font_prefix}[信息]${Font_color_suffix}"
+Error="${Red_font_prefix}[错误]${Font_color_suffix}"
+shell_version="1.0.0"
+function checknew() {
+  checknew=$(jcnfbox -V 2>&1 | awk '{print $2}')
+  check_new_ver
+  echo "你的jcnfbox版本为:""$checknew"""
+  echo -n 是否更新\(y/n\)\:
+  read checknewnum
+  if test $checknewnum = "y"; then
+    cp -r /etc/jcnfbox /tmp/
+    Install_ct
+    rm -rf /etc/jcnfbox
+    mv /tmp/jcnfbox /etc/
+    systemctl restart jcnfbox
+  else
+    exit 0
+  fi
+}
 #服务器检查项目
 #Lemonbench 综合测试
 function Lemonbench(){
