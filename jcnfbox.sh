@@ -15,7 +15,7 @@ blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
 
-shell_version="1.0.0"
+shell_version="1.0.1"
 function checknew() {
   checknew=$(jcnfbox.sh -V 2>&1 | awk '{print $2}')
   check_new_ver
