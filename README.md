@@ -57,6 +57,9 @@
 # [购买奈飞、YouTube正规合租车](https://jcnf.xyz/nf)
 ***
 
+# [群友众筹公益机场](https://jcnf.xyz/jd)
+***
+
 # 感谢
  * [BlueSkyXN](https://github.com/BlueSkyXN/SKY-BOX)
  * [arloor](https://github.com/arloor/iptablesUtils)
