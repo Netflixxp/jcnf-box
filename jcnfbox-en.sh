@@ -210,7 +210,7 @@ bash "/root/aaPanel.sh"
 
 #宝塔面板破解版·一键安装
 function btpj(){
-wget -O "/root/btpj.sh" "http://download.hostcli.com/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/btpj.sh" "https://raw.githubusercontent.com/zhucaidan/btpanel-v7.7.0/main/install/install_panel.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/btpj.sh"
 chmod 777 "/root/btpj.sh"
 blue "下载完成"

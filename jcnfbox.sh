@@ -208,9 +208,9 @@ blue "下载完成"
 bash "/root/aaPanel.sh"
 }
 
-#宝塔面板破解版·一键安装
+#宝塔面板7.7·一键安装
 function btpj(){
-wget -O "/root/btpj.sh" "http://download.hostcli.com/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/btpj.sh" "https://raw.githubusercontent.com/zhucaidan/btpanel-v7.7.0/main/install/install_panel.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/btpj.sh"
 chmod 777 "/root/btpj.sh"
 blue "下载完成"
@@ -304,7 +304,7 @@ function start_menu(){
     green " 15. 系统网络配置优化 "
     green " 16. 宝塔中文官方一键安装 "
 	green " 17. 宝塔英文官方一键安装（无需验证） "
-	green " 18. 宝塔面板破解纯净版 "
+	green " 18. 宝塔面板免验证版 "
 	green " 19. Cloudflare WARP 一键配置脚本 "
 
     yellow " =======科学上网工具============================ "
