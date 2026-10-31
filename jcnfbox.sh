@@ -15,296 +15,218 @@ blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
 
+
+# Download completely and validate Bash syntax before execution. Never run stale files.
+run_remote() (
+    local url=$1 script
+    shift
+    script=$(mktemp) || exit 1
+    trap 'rm -f "$script"' EXIT
+    command -v curl >/dev/null || { echo 'Install curl and ca-certificates first.' >&2; exit 1; }
+    curl --proto '=https' --proto-redir '=https' -fSL --connect-timeout 15 --max-time 180 --retry 2 "$url" -o "$script" || exit 1
+    [[ -s $script ]] && bash -n "$script" || { echo 'Invalid/empty Bash download.' >&2; exit 1; }
+    bash "$script" "$@"
+)
+# Prefer files from this checkout, so a maintenance branch can be tested as a unit.
+JCNF_BOX_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+run_bundled() {
+    local name=$1
+    if [[ -f $JCNF_BOX_DIR/sh/$name ]]; then
+        bash "$JCNF_BOX_DIR/sh/$name"
+    else
+        run_remote "https://raw.githubusercontent.com/Netflixxp/jcnf-box/${JCNF_BOX_REF:-main}/sh/$name"
+    fi
+}
+require_root() {
+    [[ $EUID == 0 ]] || { echo 'Please run this operation as root.' >&2; return 1; }
+}
+install_packages() {
+    require_root || return
+    if command -v apt-get >/dev/null; then
+        apt-get update && apt-get install -y "$@"
+    elif command -v dnf >/dev/null; then
+        dnf install -y "$@"
+    elif command -v yum >/dev/null; then
+        yum install -y "$@"
+    else
+        echo 'Unsupported package manager; install dependencies manually.' >&2
+        return 1
+    fi
+}
+
 #服务器检查项目
 #Lemonbench 综合测试
 function Lemonbench(){
-curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast
+run_remote https://raw.githubusercontent.com/LemonBench/LemonBench/main/LemonBench.sh -f
 }
 
 #三网Speedtest测速
 function 3speed(){
-bash <(curl -Lso- https://raw.githubusercontent.com/BlueSkyXN/SpeedTestCN/main/superspeed.sh)
+run_remote https://raw.githubusercontent.com/BlueSkyXN/SpeedTestCN/main/superspeed.sh
 }
 
 #Memorytest 内存压力测试
 function memorytest(){
-yum install wget -y
-yum groupinstall "Development Tools" -y
-wget https://raw.githubusercontent.com/FunctionClub/Memtester/master/memtester.cpp
-blue "下载完成"
-gcc -l stdc++ memtester.cpp
-./a.out
+command -v memtester >/dev/null || install_packages memtester || return
+local size loops
+read -r -p 'Memory to test in MiB (leave memory for the OS): ' size || return
+read -r -p 'Number of passes [1]: ' loops || return
+loops=${loops:-1}
+[[ $size =~ ^[1-9][0-9]*$ && $loops =~ ^[1-9][0-9]*$ ]] || return 1
+memtester "${size}M" "$loops"
 }
 
 #Route-trace 回城路由追踪
 function rtsh(){
-wget -O "/root/jcnf.sh" "https://raw.githubusercontent.com/Netflixxp/jcnfbesttrace/main/jcnf.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/jcnf.sh"
-chmod 777 "/root/jcnf.sh"
-yellow "下载完成,之后可执行 bash /root/jcnf.sh 再次运行"
-bash "/root/jcnf.sh"
+command -v traceroute >/dev/null || install_packages traceroute || return
+local target
+read -r -p 'Destination IP/domain: ' target || return
+[[ $target =~ ^[a-zA-Z0-9][a-zA-Z0-9.:-]*$ ]] || return 1
+traceroute "$target"
 }
 
 #Speedtest for Linux·下载
 function speedtest-linux(){
-wget -O "/root/speedtest" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/speedtest" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/speedtest"
-chmod 777 "/root/speedtest"
-yellow "下载完成,之后可执行 bash /root/speedtest 再次运行"
-./speedtest
+if command -v speedtest >/dev/null; then
+    speedtest
+else
+    echo 'Install the official Ookla Speedtest CLI for your architecture:'
+    echo 'https://www.speedtest.net/apps/cli'
+    return 1
+fi
 }
 
 #获取本机IP
 function getip(){
-echo  
-curl ip.p3terx.com
-echo
+curl -fSL --connect-timeout 10 --max-time 30 https://api.ipify.org; echo
 }
 
 #nf.sh 流媒体解锁测试
 function nf(){
-        #安装JQ
-	if [ -e "/etc/redhat-release" ];then
-	yum install epel-release -y -q > /dev/null;
-	yum install jq -y -q > /dev/null;
-	elif [[ $(cat /etc/os-release | grep '^ID=') =~ ubuntu ]] || [[ $(cat /etc/os-release | grep '^ID=') =~ debian ]];then
-	apt-get update -y > /dev/null;
-	apt-get install jq > /dev/null;
-	else 
-	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
-	exit;
-	fi
-        jq -V > /dev/null 2>&1;
-        if [ $? -ne 0 ];then
-	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
-	exit;
-        fi
-bash <(curl -sSL https://raw.githubusercontent.com/Netflixxp/NF/main/nf.sh)
+run_remote https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh
 }
 
 #检测/诊断Youtube地域
 function tubecheck(){
-wget -O "/root/tubecheck" "https://cdn.jsdelivr.net/gh/sjlleo/TubeCheck/CDN/tubecheck_1.0beta_linux_amd64" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/tubecheck"
-chmod 777 "/root/tubecheck"
-yellow "下载完成,之后可执行 ./tubecheck 再次运行"
-./tubecheck
+echo 'YouTube region is included in RegionRestrictionCheck.'
+nf
 }
 
 #服务器功能调试
 #ChangeSource Linux换源脚本·下载
 function cssh(){
-wget -O "/root/changesource.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/changesource.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/changesource.sh"
-chmod 777 "/root/changesource.sh"
-yellow "下载完成"
-echo
-green "请自行输入下面命令切换对应源"
-green " =================================================="
-echo
-green " bash changesource.sh 切换推荐源 "
-green " bash changesource.sh cn  切换中科大源 "
-green " bash changesource.sh aliyun 切换阿里源 "
-green " bash changesource.sh 163 切换网易源 "
-green " bash changesource.sh aws 切换AWS亚马逊云源 "
-green " bash changesource.sh restore 还原默认源 "
+require_root && run_bundled changesource.sh
 }
 
 #IPV.SH ipv4/6优先级调整
 function ipvsh(){
-wget -O "/root/ipv4.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/ipv4.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/ipv4.sh"
-chmod 777 "/root/ipv4.sh"
-yellow "下载完成,之后可执行 bash /root/ipv4.sh 再次运行"
-bash "/root/ipv4.sh"
+require_root && run_bundled ipv4.sh
 }
 
 #SWAP一键安装/卸载脚本
 function swapsh(){
-wget -O "/root/swap.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/swap.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/swap.sh"
-chmod 777 "/root/swap.sh"
-yellow "下载完成,你也可以输入 bash /root/swap.sh 来手动运行"
-bash "/root/swap.sh"
+require_root && run_bundled swap.sh
 }
 
 #安装BBR
 function bbr(){
-wget -O "/root/tcp.sh" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/tcp.sh"
-chmod 777 "/root/tcp.sh"
-yellow "下载完成,你也可以输入 bash /root/tcp.sh 来手动运行"
-bash "/root/tcp.sh"
+require_root || return
+modprobe tcp_bbr 2>/dev/null || true
+grep -qw bbr /proc/sys/net/ipv4/tcp_available_congestion_control || { echo 'BBR is unavailable in this kernel.'; return 1; }
+install -d -m 755 /etc/sysctl.d || return
+printf '%s\n' 'net.core.default_qdisc = fq' 'net.ipv4.tcp_congestion_control = bbr' > /etc/sysctl.d/90-jcnf-bbr.conf || return
+sysctl -p /etc/sysctl.d/90-jcnf-bbr.conf
 }
 
-#系统网络配置优化
+#旧网络优化说明（已停用）
 function system-best(){
-	sed -i '/net.ipv4.tcp_retries2/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_slow_start_after_idle/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_fastopen/d' /etc/sysctl.conf
-	sed -i '/fs.file-max/d' /etc/sysctl.conf
-	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.route.gc_timeout/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_synack_retries/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_syn_retries/d' /etc/sysctl.conf
-	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
-	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-
-echo "net.ipv4.tcp_retries2 = 8
-net.ipv4.tcp_slow_start_after_idle = 0
-fs.file-max = 1000000
-fs.inotify.max_user_instances = 8192
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_fin_timeout = 30
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.ip_local_port_range = 1024 65000
-net.ipv4.tcp_max_syn_backlog = 16384
-net.ipv4.tcp_max_tw_buckets = 6000
-net.ipv4.route.gc_timeout = 100
-net.ipv4.tcp_syn_retries = 1
-net.ipv4.tcp_synack_retries = 1
-net.core.somaxconn = 32768
-net.core.netdev_max_backlog = 32768
-net.ipv4.tcp_timestamps = 0
-net.ipv4.tcp_max_orphans = 32768
-# forward ipv4
-#net.ipv4.ip_forward = 1">>/etc/sysctl.conf
-sysctl -p
-	echo "*               soft    nofile           1000000
-*               hard    nofile          1000000">/etc/security/limits.conf
-	echo "ulimit -SHn 1000000">>/etc/profile
-	read -p "需要重启VPS后，才能生效系统优化配置，是否现在重启 ? [Y/n] :" yn
-	[ -z "${yn}" ] && yn="y"
-	if [[ $yn == [Yy] ]]; then
-		echo -e "${Info} VPS 重启中..."
-		reboot
-	fi
+echo 'Legacy blanket tuning retired: it overwrote limits.conf and unrelated settings.'
+echo 'Use option 14 for kernel BBR; tune other settings for your workload.'
 }
 
 #宝塔面板 官方版·一键安装
 function btnew(){
-wget -O "/root/install.sh" "http://download.bt.cn/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/install.sh"
-chmod 777 "/root/install.sh"
-blue "下载完成"
-bash "/root/install.sh"
+require_root && run_remote https://download.bt.cn/install/install_panel.sh
 }
 
 #宝塔面板英文官方版·一键安装
 function aaPanel(){
-wget -O "/root/aaPanel.sh" "http://www.aapanel.com/script/install_6.0_en.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/aaPanel.sh"
-chmod 777 "/root/aaPanel.sh"
-blue "下载完成"
-bash "/root/aaPanel.sh"
+require_root && run_remote https://www.aapanel.com/script/install_7.0_en.sh
 }
 
 #宝塔面板7.7·一键安装
 function btpj(){
-wget -O "/root/btpj.sh" "https://raw.githubusercontent.com/zhucaidan/btpanel-v7.7.0/main/install/install_panel.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/btpj.sh"
-chmod 777 "/root/btpj.sh"
-blue "下载完成"
-bash "/root/btpj.sh"
+echo 'Legacy panel 7.7 installer retired. Use official options 16 or 17.'
 }
 
 #科学上网工具
 #iptables.sh iptable中转
 function iptsh(){
-wget -O "/root/iptables.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/main/sh/iptables.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/iptables.sh"
-chmod 777 "/root/iptables.sh"
-yellow "下载完成，你也可以输入 bash /root/iptables.sh 来手动运行"
-bash "/root/iptables.sh"
+require_root && run_bundled iptables.sh
 }
 
 #gost.sh gost一键中转
 function gost(){
-wget -O "/root/gost.sh" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/gost.sh"
-chmod 777 "/root/gost.sh"
-yellow "下载完成，你也可以输入 bash /root/gost.sh 来手动运行"
-bash "/root/gost.sh"
+require_root && run_remote https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh
 }
 
 #MTP&TLS 一键脚本
 function mtp(){
-wget -O "/root/mtp.sh" "https://raw.githubusercontent.com/sunpma/mtp/master/mtproxy.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/mtp.sh"
-chmod 777 "/root/mtp.sh"
-yellow "下载完成，你也可以输入 bash /root/mtp.sh 来手动运行"
-bash "/root/mtp.sh"
+require_root && run_remote https://raw.githubusercontent.com/sunpma/mtp/master/mtproxy.sh
 }
 
 #xray.sh xray一键安装8合一
 function xray(){
-wget -O "/root/xray.sh" "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/xray.sh"
-chmod 777 "/root/xray.sh"
-yellow "下载完成，你也可以输入 bash /root/xray.sh 来手动运行"
-bash "/root/xray.sh"
+require_root && run_remote https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh
 }
 
 #wulabing.sh wulabingxray安装脚本
 function wulabing(){
-wget -O "/root/wulabing.sh" "https://raw.githubusercontent.com/wulabing/Xray_onekey/main/install.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/wulabing.sh"
-chmod 777 "/root/wulabing.sh"
-yellow "下载完成，你也可以输入 bash /root/wulabing.sh 来手动运行"
-bash "/root/wulabing.sh"
+require_root && run_remote https://raw.githubusercontent.com/wulabing/Xray_onekey/main/install.sh
 }
 
 #v2-ui.sh 一键安装
 function v2-ui(){
-bash <(curl -Ls https://blog.sprov.xyz/v2-ui.sh)
+require_root && run_remote https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh
 }
 
 # Cloudflare WARP 一键配置脚本
 function WARP(){
-bash <(curl -fsSL git.io/warp.sh) menu
+require_root && run_remote https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh
 }
 
-# Ehcoo隧道中转
+# Ehco 安装说明
 function ehco(){
-bash <(curl -fsSL https://leo.moe/ehco.sh)
+echo 'Old installer is unavailable. See https://github.com/Ehco1996/ehco for current installation.'; return 1
 }
 
 #主菜单
 function start_menu(){
-    clear
-    red " jcnf 常用脚本包" 
+    if [[ -t 1 ]]; then clear; fi
+    red " jcnf 常用脚本包"
     green " https://github.com/Netflixxp/jcnf-box "
     green " 博客 https://ybfl.xyz "
 	green " TG频道 https://t.me/mffjc "
-	
+
 	yellow " =======服务器检查============================== "
     green " 1. Lemonbench 综合测试 "
     green " 2. 三网Speedtest测速"
     green " 3. 内存压力测试"
-    green " 4. 回程路由追踪" 
+    green " 4. 路由追踪（输入目标）"
     green " 5. Speedtest测速"
     green " 6. 获取本机IP"
     green " 7. 流媒体解锁测试"
 	green " 8. 检测/诊断Youtube地域"
-	
+
     yellow " =======服务器功能============================== "
     green " 11. Linux换源脚本"
-    green " 12. ipv4/6优先级调整 " 
+    green " 12. ipv4/6优先级调整 "
     green " 13. 虚拟内存SWAP一键安装 "
     green " 14. 一键安装BBR "
-    green " 15. 系统网络配置优化 "
+    green " 15. 旧网络优化说明（已停用） "
     green " 16. 宝塔中文官方一键安装 "
-	green " 17. 宝塔英文官方一键安装（无需验证） "
-	green " 18. 宝塔面板免验证版 "
+	green " 17. aaPanel 官方安装 "
+	green " 18. 旧宝塔 7.7 说明（已停用） "
 	green " 19. Cloudflare WARP 一键配置脚本 "
 
     yellow " =======科学上网工具============================ "
@@ -312,14 +234,14 @@ function start_menu(){
     green " 22. gost一键中转 "
     green " 23. MTP&TLS 一键脚本 "
     green " 24. xray一键安装8合一脚本 "
-    green " 25. v2-ui一键安装 "
+    green " 25. 3x-ui 安装（替代 v2-ui） "
 	green " 26. wulabing一键xray脚本 "
-	green " 27. Ehcoo隧道中转 "
-	
+	green " 27. Ehco 安装说明 "
+
     yellow " =============================================== "
     green " 0. 退出脚本"
     echo
-    read -p "请输入数字:" menuNumberInput
+    read -r -p "请输入数字:" menuNumberInput || return 0
     case "$menuNumberInput" in
         1 )
            Lemonbench
@@ -394,15 +316,17 @@ function start_menu(){
            ehco
 	;;
         0 )
-            exit 1
+            return 0
         ;;
         * )
             clear
             red "请输入正确数字 !"
-            start_menu
+            return 2
         ;;
     esac
 }
 
 
-start_menu "first"
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+    start_menu
+fi
