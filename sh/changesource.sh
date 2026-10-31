@@ -1,213 +1,49 @@
 #!/usr/bin/env bash
-#
-# Description: Change faster mirrors for Linux
-
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-SKYBLUE='\033[0;36m'
-PLAIN='\033[0m'
-
-getAbout() {
-	echo ""
-	echo " ========================================================= "
-	echo " \                    ChangeSource.sh                 / "
-	echo " \            Choose a faster mirror for Linux           / "
-	echo " \                   Renewed by BlueSkyXN                  / "
-	echo " ========================================================= "
-	echo ""
-	echo " https://blog.000714.xyz/202101/3828.html"
-	echo " Copyright (C) 2021 blueSkyXN bluesky@000714.xyz"
-	echo -e " Version: ${GREEN}1.0.3${PLAIN} (2 Nov 2018)"
-	echo " Usage: Read MY Blog or Github First!!!"
-	echo ""
-}
-
-getHelp(){
-	echo " $( bash changesource.sh )"
-	ehco " - set sources from cdn-fastly "
-	echo " $( bash changesource.sh cn ) "
-	echo " - set sources from USTC "
-	echo " $( bash changesource.sh 163 ) "
-	echo " - set sources from 163.com "
-	echo " $( bash changesource.sh aliyun ) "
-	echo " - set sources from aliyun.com "
-	echo " $( bash changesource.sh aws ) "
-	echo " - set sources from cdn-aws "
-	echo " $( bash changesource.sh restore ) "
-	echo " - restore sources from backup file "
-}
-
-updateInit(){
-	[[ $EUID -ne 0 ]] && echo -e " ${RED}Error:${PLAIN} This script must be run as root!" && exit 1
-
-	if [ -f /etc/redhat-release ]; then
-	    release="centos"
-	elif cat /etc/issue | grep -Eqi "debian"; then
-	    release="debian"
-	elif cat /etc/issue | grep -Eqi "ubuntu"; then
-	    release="ubuntu"
-	elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
-	    release="centos"
-	elif cat /proc/version | grep -Eqi "debian"; then
-	    release="debian"
-	elif cat /proc/version | grep -Eqi "ubuntu"; then
-	    release="ubuntu"
-	elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
-	    release="centos"
-	fi
-
-	if [ $release == "debian" ]; then
-		debianVersion=$(awk -F'[= "]' '/VERSION_ID/{print $3}' /etc/os-release)
-	elif [ $release == "ubuntu" ]; then
-		ubuntuVersion=$(awk -F'[= "]' '/VERSION_ID/{print $3}' /etc/os-release)
-	elif [ $release == "centos" ]; then
-		os_release=$(grep "CentOS" /etc/redhat-release 2>/dev/null)
-		if echo "$os_release"|grep "release 5" >/dev/null 2>&1
-		then
-			centosVersion=5
-		elif echo "$os_release"|grep "release 6" >/dev/null 2>&1
-		then
-			centosVersion=6
-		elif echo "$os_release"|grep "release 7" >/dev/null 2>&1
-		then
-			centosVersion=7
-		else
-			centosVersion=""
-		fi
-	else
-		echo -e " ${RED}Error:${PLAIN} This script can not be run in your system now!" && exit 1
-	fi
-}
-
-setDebian(){
-	if [[ -f /etc/apt/sources.list.bak ]]; then
-		echo -e " ${GREEN}sources.list.bak exists${PLAIN}"
-	else
-		mv /etc/apt/sources.list{,.bak}
-	fi
-
-	[ -f /etc/apt/sources.list ] && rm /etc/apt/sources.list
-	
-	echo "deb http://cdn-fastly.deb.debian.org/debian/ jessie main non-free contrib" >>/etc/apt/sources.list
-	echo "deb http://cdn-fastly.deb.debian.org/debian/ jessie-updates main non-free contrib" >>/etc/apt/sources.list
-	echo "deb http://cdn-fastly.deb.debian.org/debian/ jessie-backports main non-free contrib" >>/etc/apt/sources.list
-	echo "deb-src http://cdn-fastly.deb.debian.org/debian/ jessie main non-free contrib" >>/etc/apt/sources.list
-	echo "deb-src http://cdn-fastly.deb.debian.org/debian/ jessie-updates main non-free contrib" >>/etc/apt/sources.list
-	echo "deb-src http://cdn-fastly.deb.debian.org/debian/ jessie-backports main non-free contrib" >>/etc/apt/sources.list
-	echo "deb http://cdn-fastly.deb.debian.org/debian-security/ jessie/updates main non-free contrib" >>/etc/apt/sources.list
-	echo "deb-src http://cdn-fastly.deb.debian.org/debian-security/ jessie/updates main non-free contrib" >>/etc/apt/sources.list
-
-	[ "$debianVersion" == '7' ] && sed -i 's/jessie/wheezy/'g /etc/apt/sources.list
-	[ "$debianVersion" == '8' ] && echo -n ""
-	[ "$debianVersion" == '9' ] && sed -i 's/jessie/stretch/'g /etc/apt/sources.list
-}
-
-setUbuntu(){
-	if [[ -f /etc/apt/sources.list.bak ]]; then
-		echo -e " ${GREEN}sources.list.bak exists${PLAIN}"
-	else
-		mv /etc/apt/sources.list{,.bak}
-	fi
-
-	[ -f /etc/apt/sources.list ] && rm /etc/apt/sources.list
-
-	echo "deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse" >>/etc/apt/sources.list
-	echo "deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse" >>/etc/apt/sources.list
-
-	[ "$ubuntuVersion" == '14.04' ] && sed -i 's/xenial/trusty/'g /etc/apt/sources.list
-	[ "$ubuntuVersion" == '16.06' ] && echo -n ""
-	[ "$ubuntuVersion" == '18.04' ] && sed -i 's/xenial/bionic/'g /etc/apt/sources.list
-}
-
-setCentos(){
-	if [ -f /etc/yum.repos.d/CentOS-Base.repo.bak ]; then
-		echo -e " ${GREEN}CentOS-Base.repo.bak exists${PLAIN}"
-	else
-		mv /etc/yum.repos.d/CentOS-Base.repo{,.bak}
-	fi
-
-	[ -f /etc/yum.repos.d/CentOS-Base.repo ] && rm /etc/yum.repos.d/CentOS-Base.repo
-
-	[ "$centosVersion" == '5' ] && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
-	[ "$centosVersion" == '6' ] && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-	[ "$centosVersion" == '7' ] && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-}
-
-setAWS(){
-	sed -i 's/cdn-fastly.deb.debian.org/cdn-aws.deb.debian.org/'g /etc/apt/sources.list
-}
-
-setCn(){
-	sed -i 's/cdn-fastly.deb.debian.org/mirrors.ustc.edu.cn/'g /etc/apt/sources.list
-}
-
-set163(){
-	sed -i 's/cdn-fastly.deb.debian.org/mirrors.163.com/'g /etc/apt/sources.list
-}
-
-setAliyun(){
-	sed -i 's/cdn-fastly.deb.debian.org/mirrors.aliyun.com/'g /etc/apt/sources.list
-}
-
-restore(){
-	if [ -f /etc/apt/sources.list.bak ]; then
-		rm /etc/apt/sources.list
-		mv /etc/apt/sources.list.bak /etc/apt/sources.list
-	elif [ -f /etc/yum.repos.d/CentOS-Base.repo.bak ]; then
-		rm /etc/yum.repos.d/CentOS-Base.repo
-		mv /etc/yum.repos.d/CentOS-Base.repo.bak /etc/yum.repos.d/CentOS-Base.repo
-	fi
-}
-
-setSources(){
-	getAbout
-	updateInit
-	case "$release" in
-		debian)
-			case $para in
-				'fastly'|'-fastly'|'--fastly' )
-					setDebian;;
-			    'cn'|'-cn'|'--cn' )
-					setDebian;setCn;;
-			   	'163'|'-163'|'--163' )
-					setDebian;set163;;
-				'aliyun'|'-aliyun'|'--aliyun' )
-					setDebian;setAliyun;;
-				'aws'|'-aws'|'--aws' )
-					setDebian;setAWS;;
-				'restore'|'-restore'|'--restore' )
-					restore;;
-			*)
-			setDebian;;
-			esac
-			apt-get update;;
-		ubuntu)
-			case $para in
-				'restore'|'-restore'|'--restore' )
-					restore;;
-			*)
-			setUbuntu;
-			esac
-			apt-get update;;
-		centos)
-			case $para in
-				'restore'|'-restore'|'--restore' )
-					restore;;
-			*)
-			setCentos;
-			esac
-			yum makecache;;
-	esac
-}
-
-para=$1
-setSources
-echo -e "${GREEN}Done${PLAIN}"
+# Preserve suites, components, signed-by and deb822 formatting.
+set -euo pipefail
+if [[ ${1:-} == --help ]]; then
+    echo 'Usage: bash changesource.sh [cn|aliyun|restore]'
+    echo 'Debian/Ubuntu only. Backups: /var/backups/jcnf-sources/'
+    exit 0
+fi
+[[ $EUID == 0 ]] || { echo 'Run as root.' >&2; exit 1; }
+. /etc/os-release
+[[ $ID == debian || $ID == ubuntu ]] || { echo 'Only Debian/Ubuntu supported; no files changed.'; exit 1; }
+backup=/var/backups/jcnf-sources
+case ${1:-cn} in
+    restore)
+        [[ -d $backup/original ]] || { echo 'No backup found.'; exit 1; }
+        cp -a "$backup/original/." /etc/apt/
+        apt-get update
+        exit
+        ;;
+    cn) mirror=mirrors.ustc.edu.cn ;;
+    aliyun) mirror=mirrors.aliyun.com ;;
+    *) echo 'Use cn, aliyun or restore; no files changed.'; exit 1 ;;
+esac
+shopt -s nullglob
+files=(/etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources)
+install -d -m 700 "$backup"
+if [[ ! -d $backup/original ]]; then
+    stage=$(mktemp -d "$backup/.original.XXXXXX")
+    trap 'rm -rf "$stage"' EXIT
+    [[ ! -f /etc/apt/sources.list ]] || cp -a /etc/apt/sources.list "$stage/"
+    [[ ! -d /etc/apt/sources.list.d ]] || cp -a /etc/apt/sources.list.d "$stage/"
+    mv "$stage" "$backup/original"
+    trap - EXIT
+fi
+for file in "${files[@]}"; do
+    [[ -f $file ]] || continue
+    # Only replace official hosts; retain release names and third-party repos.
+    sed -E -i \
+        -e "s|https?://mirrors\\.(ustc.edu.cn\|aliyun.com)/|https://$mirror/|g" \
+        -e "s|https?://(deb.debian.org/debian-security\|security.debian.org(/debian-security)?)|https://$mirror/debian-security|g" \
+        -e "s|https?://deb.debian.org/debian([/[:space:]]\|$)|https://$mirror/debian\\1|g" \
+        -e "s|https?://([a-z]{2}\\.)?archive.ubuntu.com/ubuntu|https://$mirror/ubuntu|g" \
+        -e "s|https?://security.ubuntu.com/ubuntu|https://$mirror/ubuntu|g" \
+        -e "s|https?://ports.ubuntu.com/ubuntu-ports|https://$mirror/ubuntu-ports|g" "$file"
+done
+if ! apt-get update; then
+    echo "Update failed. Restore with: bash $0 restore" >&2
+    exit 1
+fi
